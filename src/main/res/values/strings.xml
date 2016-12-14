@@ -1,0 +1,15 @@
+<resources>
+	<string name="app_name">Web File Downloader</string>
+
+	<string name="webfiledownloader_error_cacheFailure">Failed to create or read cache directory</string>
+	<string name="webfiledownloader_error_httpTimeout">Connection timed out</string>
+	<string name="webfiledownloader_error_httpNoHost">Host not found</string>
+	<string name="webfiledownloader_error_other">File loading error</string>
+	<string name="webfiledownloader_error_decode">Error decoding image</string>
+	<string name="webfiledownloader_error_socket">Error establishing connection</string>
+	<string name="webfiledownloader_error_unverified">Cannot verify connection</string>
+
+	<string name="webfiledownloader_warning_too_large">Large file</string>
+
+	<string name="webfiledownloader_error_httpResponse">Unexpected http response</string>
+</resources>
