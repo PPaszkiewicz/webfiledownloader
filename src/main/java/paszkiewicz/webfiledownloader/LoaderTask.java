@@ -1,8 +1,9 @@
 package paszkiewicz.webfiledownloader;
 
 import android.app.Activity;
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	protected final int mobileWarning;
 	protected final int cacheSize;
 	protected final int timeout;
-	protected Activity activity;
+	protected FragmentActivity  activity;
 	protected WebFileDownloader.Callback callback;
 
 	protected long fileLength;
@@ -31,7 +32,7 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	public LoaderTask(Context context, String url, int mobileWarning, int cacheSize, int timeout) {
 		super(context);
 
-		Activity activity = (Activity) context;
+		FragmentActivity  activity = (FragmentActivity ) context;
 		setActivity(activity);
 
 		this.url = url;
@@ -41,7 +42,7 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 		onContentChanged();
 	}
 
-	public LoaderTask setActivity(Activity activity) {
+	public LoaderTask setActivity(FragmentActivity activity) {
 		this.activity = activity;
 		this.callback = (WebFileDownloader.Callback) activity;
 		return this;

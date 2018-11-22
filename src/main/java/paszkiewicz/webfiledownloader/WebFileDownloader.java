@@ -1,10 +1,11 @@
 package paszkiewicz.webfiledownloader;
 
 import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 
 import java.io.File;
 
@@ -36,7 +37,7 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 
 	private boolean acceptedMobileWarning;
 
-	private Activity activity;
+	private FragmentActivity activity;
 	private Callback callback;
 	private LoaderTask task;
 
@@ -50,7 +51,7 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 	 * @param timeout   time (in milliseconds) to kill connection
 	 * @param loaderId
 	 */
-	public WebFileDownloader(Activity activity, Uri url, int sizeWarning, int cacheSize,
+	public WebFileDownloader(FragmentActivity activity, Uri url, int sizeWarning, int cacheSize,
 							 int timeout, int loaderId) {
 		this.activity = activity;
 		try {
@@ -66,7 +67,7 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 		this.loaderId = loaderId;
 
 		isContent = url.getScheme().equals("content");
-		task = (LoaderTask) activity.getLoaderManager().initLoader(loaderId, null, this);
+		task = (LoaderTask) activity.getSupportLoaderManager().initLoader(loaderId, null, this);
 		task.setActivity(activity);    //reattach to new activity if needed
 	}
 
@@ -102,9 +103,9 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 	 * Restarts the loader that won't stop even if filesize limit is exceeded
 	 */
 	public void unpause() {
-		activity.getLoaderManager().destroyLoader(loaderId);
+		activity.getSupportLoaderManager().destroyLoader(loaderId);
 		acceptedMobileWarning = true;
-		task = (LoaderTask) activity.getLoaderManager().initLoader(loaderId, null, this);
+		task = (LoaderTask) activity.getSupportLoaderManager().initLoader(loaderId, null, this);
 		task.setActivity(activity);
 	}
 
