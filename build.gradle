@@ -15,4 +15,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dependencies{
+        implementation 'com.android.support:support-fragment:27.1.1'
+    }
 }
