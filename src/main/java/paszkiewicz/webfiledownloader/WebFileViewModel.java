@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
@@ -55,10 +56,12 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
 
     /**
      * Download new url. If file is already downloaded or downloading, returns false and does nothing.
+     * This must be called on UI thread.
      *
      * @param fileSizeLimit max file size (in bytes) to download - will cancel download if it's larger. If < 1 there is no limit.
      * @return true if download started, false if it's already up
      */
+    @MainThread
     public boolean downloadUrl(Context context, Uri url, int fileSizeLimit) {
         return downloadUrl(context, url, fileSizeLimit, false);
     }
@@ -68,6 +71,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
      *
      * @return true if refresh is happening, false if there's no ongoing task
      */
+    @MainThread
     public boolean refreshDownload() {
         Progress p = progressMutableLiveData.getValue();
         if (p == null) {
@@ -102,7 +106,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
         }
         //add new download task
         p = new Progress(url, fileSizeLimit);
-        progressMutableLiveData.postValue(p);
+        progressMutableLiveData.setValue(p);
         // prevent activity leaks by referencing app context
         appContext = context.getApplicationContext();
         if (url.getScheme().equals("content"))
@@ -124,6 +128,8 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
         }
         if (loaderTask != null) {
             loaderTask.cancelLoadInBackground();
+            loaderTask.unregisterListener(this);
+            loaderTask = null;
         }
     }
 
@@ -203,12 +209,12 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
 
         @Override
         public void onDownloadWarning(int loaderId, String message, long filesize) {
-
+            // never triggered now; parsed in onLoadComplete
         }
     }
 
 
-
+    /** Observed class with data about download. */
     public static class Progress {
         /**
          * Target url
@@ -219,7 +225,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
         String fileTooLargeMessage;
         Error error;
         long progress;
-        long max;
+        long max = -1;
         int status = 0;
         File result;
         boolean isDeterminate = false;
@@ -237,10 +243,12 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
             return error;
         }
 
+        /** Current progress. */
         public long getProgress() {
             return progress;
         }
 
+        /** Max progress, might be -1 if not determined yet. */
         public long getMax() {
             return max;
         }
@@ -290,7 +298,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
     }
 
     /**
-     * Possible downlaod error with readable strings.
+     * Possible download error with readable strings.
      */
     public static class Error {
         final static int ERROR_CREATING_CACHE = R.string.webfiledownloader_error_cacheFailure;
@@ -300,12 +308,6 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
         final static int ERROR_SOCKET = R.string.webfiledownloader_error_socket;
         final static int ERROR_UNVERIFIED = R.string.webfiledownloader_error_unverified;
         final static int ERROR_OTHER = R.string.webfiledownloader_error_other;
-
-        /**
-         * Use this as onDownloadError code to call {@link WebFileDownloader.Callback#onDownloadWarning(int, String,
-         * long)}
-         */
-        final static int ERROR_WARNING_SIZE = R.string.webfiledownloader_warning_too_large;
 
         public final String message;
         public final int code;
