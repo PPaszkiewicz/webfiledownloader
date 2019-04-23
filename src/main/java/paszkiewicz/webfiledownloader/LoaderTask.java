@@ -21,7 +21,9 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	protected final int mobileWarning;
 	protected final int cacheSize;
 	protected final int timeout;
+	@Deprecated
 	protected FragmentActivity  activity;
+
 	protected WebFileDownloader.Callback callback;
 
 	protected long fileLength;
@@ -32,8 +34,11 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	public LoaderTask(Context context, String url, int mobileWarning, int cacheSize, int timeout) {
 		super(context);
 
-		FragmentActivity  activity = (FragmentActivity ) context;
-		setActivity(activity);
+		// legacy
+		if(context instanceof FragmentActivity){
+			FragmentActivity  activity = (FragmentActivity ) context;
+			setActivity(activity);
+		}
 
 		this.url = url;
 		this.mobileWarning = mobileWarning;
@@ -46,6 +51,10 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 		this.activity = activity;
 		this.callback = (WebFileDownloader.Callback) activity;
 		return this;
+	}
+
+	public void setCallback(WebFileDownloader.Callback callback){
+		this.callback = callback;
 	}
 
 	/**
@@ -112,7 +121,7 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 		ImageCacheManager cache = null;
 
 		try {
-			cache = new ImageCacheManager(activity, cacheSize);
+			cache = new ImageCacheManager(getContext(), cacheSize);
 			//get cached image or image to save stream to, if it's loaded return it instead
 			imageFile = cache.getCachedUrlFile(url);
 			if (imageFile.isLoaded()) {
@@ -201,13 +210,8 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	 */
 	protected void updateProgress(final long current, final long max, final boolean
 			isDeterminate) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (!isFileDownloadCancelled)
-					callback.onUpdateDownloadProgress(getId(), current, max, isDeterminate);
-			}
-		});
+		if (!isFileDownloadCancelled)
+			callback.onUpdateDownloadProgress(getId(), current, max, isDeterminate);
 	}
 
 	/**

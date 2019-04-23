@@ -12,6 +12,7 @@ import java.io.File;
 /**
  * Creates a loader that downloads a file or fetches from a cache. <br> Supports partial
  * downloads.<br> Uses androids AsyncLoader and LoaderManager to manage activity life cycle.
+ * @deprecated use viewmodel implementation: {@link WebFileViewModel}
  */
 public class WebFileDownloader implements LoaderManager.LoaderCallbacks<CacheableFile> {
 	final static int ERROR_CREATING_CACHE = R.string.webfiledownloader_error_cacheFailure;

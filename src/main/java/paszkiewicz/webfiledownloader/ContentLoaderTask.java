@@ -18,12 +18,12 @@ class ContentLoaderTask extends LoaderTask {
 	@Override
 	protected InputStream openInputStream(CacheableFile imageFile) throws Exception {
 		Uri uri = Uri.parse(url);
-		Cursor c = activity.getContentResolver().query(uri, null, null, null, null);
+		Cursor c = getContext().getContentResolver().query(uri, null, null, null, null);
 		if (c != null && c.moveToFirst()) {
 			long fileLen = c.getLong(c.getColumnIndex(OpenableColumns.SIZE));
 			fileLength = fileLen > 0 ? fileLen : 0;
 			c.close();
 		}
-		return activity.getContentResolver().openInputStream(uri);
+		return getContext().getContentResolver().openInputStream(uri);
 	}
 }
