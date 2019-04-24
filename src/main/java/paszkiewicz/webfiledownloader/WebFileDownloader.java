@@ -12,6 +12,7 @@ import java.io.File;
 /**
  * Creates a loader that downloads a file or fetches from a cache. <br> Supports partial
  * downloads.<br> Uses androids AsyncLoader and LoaderManager to manage activity life cycle.
+ * todo: delete this implementation
  * @deprecated use viewmodel implementation: {@link WebFileViewModel}
  */
 public class WebFileDownloader implements LoaderManager.LoaderCallbacks<CacheableFile> {
@@ -69,7 +70,7 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 
 		isContent = url.getScheme().equals("content");
 		task = (LoaderTask) activity.getSupportLoaderManager().initLoader(loaderId, null, this);
-		task.setActivity(activity);    //reattach to new activity if needed
+		task.setCallback((WebFileDownloader.Callback)activity);
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class WebFileDownloader implements LoaderManager.LoaderCallbacks<Cacheabl
 		activity.getSupportLoaderManager().destroyLoader(loaderId);
 		acceptedMobileWarning = true;
 		task = (LoaderTask) activity.getSupportLoaderManager().initLoader(loaderId, null, this);
-		task.setActivity(activity);
+		task.setCallback((WebFileDownloader.Callback)activity);
 	}
 
 	@Override

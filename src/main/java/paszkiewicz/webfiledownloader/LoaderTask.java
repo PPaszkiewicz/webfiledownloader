@@ -21,8 +21,6 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 	protected final int mobileWarning;
 	protected final int cacheSize;
 	protected final int timeout;
-	@Deprecated
-	protected FragmentActivity  activity;
 
 	protected WebFileDownloader.Callback callback;
 
@@ -33,13 +31,6 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 
 	public LoaderTask(Context context, String url, int mobileWarning, int cacheSize, int timeout) {
 		super(context);
-
-		// legacy
-		if(context instanceof FragmentActivity){
-			FragmentActivity  activity = (FragmentActivity ) context;
-			setActivity(activity);
-		}
-
 		this.url = url;
 		this.mobileWarning = mobileWarning;
 		this.cacheSize = cacheSize;
@@ -47,11 +38,6 @@ abstract class LoaderTask extends AsyncTaskLoader<CacheableFile> {
 		onContentChanged();
 	}
 
-	public LoaderTask setActivity(FragmentActivity activity) {
-		this.activity = activity;
-		this.callback = (WebFileDownloader.Callback) activity;
-		return this;
-	}
 
 	public void setCallback(WebFileDownloader.Callback callback){
 		this.callback = callback;

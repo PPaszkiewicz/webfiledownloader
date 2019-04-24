@@ -58,7 +58,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
      * Download new url. If file is already downloaded or downloading, returns false and does nothing.
      * This must be called on UI thread.
      *
-     * @param fileSizeLimit max file size (in bytes) to download - will cancel download if it's larger. If < 1 there is no limit.
+     * @param fileSizeLimit max file size (in bytes) to download - will cancel download if it's larger. If -1 there is no limit.
      * @return true if download started, false if it's already up
      */
     @MainThread
@@ -67,12 +67,12 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
     }
 
     /**
-     * Refresh current download.
+     * Refresh current download using new fileSizeLimit.
      *
      * @return true if refresh is happening, false if there's no ongoing task
      */
     @MainThread
-    public boolean refreshDownload() {
+    public boolean refreshDownload(int fileSizeLimit) {
         Progress p = progressMutableLiveData.getValue();
         if (p == null) {
             return false; // download not up
@@ -93,7 +93,7 @@ public class WebFileViewModel extends ViewModel implements Loader.OnLoadComplete
             Log.e(TAG, "Error creating cache!");
             e.printStackTrace();
         }
-        return downloadUrl(appContext, p.url, p.fileSizeLimit, true);
+        return downloadUrl(appContext, p.url, fileSizeLimit, true);
     }
 
     // internal download

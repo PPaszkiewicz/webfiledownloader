@@ -70,7 +70,7 @@ class WebLoaderTask extends LoaderTask {
 			long downloadSize = (fileLength - imageFile.file.length());
 			if (downloadSize > mobileWarning) {
 				setErrorCode(WebFileDownloader.ERROR_WARNING_SIZE);
-				setErrorMessage(Formatter.formatShortFileSize(activity, downloadSize));
+				setErrorMessage(Formatter.formatShortFileSize(getContext(), downloadSize));
 				return null;
 			}
 		}
